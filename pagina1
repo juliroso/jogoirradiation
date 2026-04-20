@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mito ou Verdade - Proteção Radiológica</title>
+    <style>
+        :root {
+            --bg-color: #0b0b3b; /* Azul escuro da identidade */
+            --text-color: #ffffff;
+            --accent-color: #f39c12; /* Laranja */
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            margin-bottom: 30px;
+            color: #ccc;
+        }
+
+        .question-box {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            min-height: 80px;
+        }
+
+        .btn {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.1em;
+            min-height: 100px;
+            display: none;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .next-btn {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+        }
+
+        .score-board {
+            display: none;
+        }
+
+        .score-board h2 {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="game-container">
+    <h1>MITO ou VERDADE?</h1>
+    <div class="subtitle">Irradiation - Consultoria em Física Médica</div>
+    
+    <div id="quiz-area">
+        <div class="question-box" id="question-text">Carregando pergunta...</div>
+        
+        <button class="btn" id="btn-mito" onclick="checkAnswer('Mito')">MITO</button>
+        <button class="btn" id="btn-verdade" onclick="checkAnswer('Verdade')">VERDADE</button>
+
+        <div class="feedback" id="feedback-area"></div>
+        <button class="next-btn" id="btn-next" onclick="nextQuestion()">Próxima Pergunta</button>
+    </div>
+
+    <div class="score-board" id="score-area">
+        <h2>Fim de Jogo!</h2>
+        <p>Você acertou <span id="final-score">0</span> de <span id="total-questions">0</span> perguntas.</p>
+        <p>Proteção radiológica é coisa séria. Siga a @irradiationjr para aprender mais!</p>
+        <button class="btn" onclick="location.reload()">Jogar Novamente</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            text: "A radiação é sempre prejudicial a saúde.",
+            answer: "Mito",
+            explanation: "Depende do tipo de radiação e dose. Em certos casos, como em exames, a dose gera benefício para o diagnóstico eficaz."
+        },
+        {
+            text: "Todas as fontes de radiação são iguais em termos de perigo.",
+            answer: "Mito",
+            explanation: "Existem radiações não ionizantes que não são prejudiciais e radiações ionizantes que podem ser, dependendo da exposição."
+        },
+        {
+            text: "A radiação é cumulativa ao longo da vida.",
+            answer: "Verdade",
+            explanation: "É cumulativa em termos de efeitos biológicos, todas as exposições que temos ao longo da vida são somáticas."
+        },
+        {
+            text: "O contador Geiger é usado para proteger contra a radiação.",
+            answer: "Mito",
+            explanation: "Ele só mede e indica a radiação no ambiente, não oferece nenhum tipo de barramento."
+        },
+        {
+            text: "Todos os dispositivos eletrônicos emitem radiação.",
+            answer: "Verdade",
+            explanation: "Podem emitir radiações eletromagnéticas não ionizantes, ou seja, que não causam mal aos seres vivos."
+        },
+        {
+            text: "EPI's podem tornar uma pessoa imune à radiação.",
+            answer: "Mito",
+            explanation: "Os EPI's (Equipamentos de Proteção Individual) somente diminuem a exposição à radiação, não tornam o indivíduo imune."
+        },
+        {
+            text: "A máquina de raios X emite radiação mesmo desligada.",
+            answer: "Mito",
+            explanation: "No momento em que é desligada, a máquina para de produzir raios X. Não há emissão no meio."
+        },
+        {
+            text: "Ao realizar um exame que utiliza raios X o paciente fica radioativo.",
+            answer: "Mito",
+            explanation: "A radiação só atravessa o paciente. Para ficar radioativo, ele precisaria ter contato (incorporação) com material radioativo."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionText = document.getElementById("question-text");
+    const feedbackArea = document.getElementById("feedback-area");
+    const btnMito = document.getElementById("btn-mito");
+    const btnVerdade = document.getElementById("btn-verdade");
+    const btnNext = document.getElementById("btn-next");
+    const quizArea = document.getElementById("quiz-area");
+    const scoreArea = document.getElementById("score-area");
+
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        questionText.innerText = q.text;
+        feedbackArea.style.display = "none";
+        btnNext.style.display = "none";
+        btnMito.disabled = false;
+        btnVerdade.disabled = false;
+    }
+
+    function checkAnswer(userChoice) {
+        const q = questions[currentQuestionIndex];
+        const isCorrect = userChoice === q.answer;
+
+        btnMito.disabled = true;
+        btnVerdade.disabled = true;
+
+        feedbackArea.style.display = "block";
+        
+        if (isCorrect) {
+            score++;
+            feedbackArea.style.backgroundColor = "rgba(46, 204, 113, 0.2)";
+            feedbackArea.style.border = "1px solid var(--correct-color)";
+            feedbackArea.innerHTML = `<strong>Correto! É ${q.answer}.</strong><br><br>${q.explanation}`;
+        } else {
+            feedbackArea.style.backgroundColor = "rgba(231, 76, 60, 0.2)";
+            feedbackArea.style.border = "1px solid var(--wrong-color)";
+            feedbackArea.innerHTML = `<strong>Incorreto. A resposta é ${q.answer}.</strong><br><br>${q.explanation}`;
+        }
+
+        btnNext.style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showScore();
+        }
+    }
+
+    function showScore() {
+        quizArea.style.display = "none";
+        scoreArea.style.display = "block";
+        document.getElementById("final-score").innerText = score;
+        document.getElementById("total-questions").innerText = questions.length;
+    }
+
+    // Inicializa o jogo
+    loadQuestion();
+</script>
+
+</body>
+</html>
