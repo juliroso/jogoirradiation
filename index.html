@@ -42,8 +42,26 @@
 
         .subtitle {
             font-size: 0.9em;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: #ccc;
+        }
+
+        /* ESTILOS DA BARRA DE PROGRESSO */
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-color); /* Usando o laranja da identidade */
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.4s ease;
         }
 
         .question-box {
@@ -113,6 +131,10 @@
     <div class="subtitle">Irradiation - Consultoria em Física Médica</div>
     
     <div id="quiz-area">
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
         <div class="question-box" id="question-text">Carregando pergunta...</div>
         
         <button class="btn" id="btn-mito" onclick="checkAnswer('Mito')">MITO</button>
@@ -184,6 +206,7 @@
     const btnNext = document.getElementById("btn-next");
     const quizArea = document.getElementById("quiz-area");
     const scoreArea = document.getElementById("score-area");
+    const progressBar = document.getElementById("progress-bar"); // Referência da barra
 
     function loadQuestion() {
         const q = questions[currentQuestionIndex];
@@ -192,6 +215,10 @@
         btnNext.style.display = "none";
         btnMito.disabled = false;
         btnVerdade.disabled = false;
+
+        // ATUALIZA A BARRA DE PROGRESSO
+        const progressPercentage = (currentQuestionIndex / questions.length) * 100;
+        progressBar.style.width = progressPercentage + "%";
     }
 
     function checkAnswer(userChoice) {
@@ -231,6 +258,9 @@
         scoreArea.style.display = "block";
         document.getElementById("final-score").innerText = score;
         document.getElementById("total-questions").innerText = questions.length;
+        
+        // Preenche a barra em 100% no final
+        progressBar.style.width = "100%";
     }
 
     // Inicializa o jogo
