@@ -6,23 +6,21 @@
     <title>Mito ou Verdade - Proteção Radiológica</title>
     <style>
         :root {
-            --main-dark-color: #0b0b3b; /* Azul escuro da identidade */
-            --container-bg-color: rgba(255, 255, 255, 0.95); /* Fundo branco quase opaco para o texto */
+            --bg-color: #0b0b3b; /* Azul escuro/roxo da identidade */
+            --text-color: #ffffff;
             --accent-color: #f39c12; /* Laranja */
             --correct-color: #2ecc71;
             --wrong-color: #e74c3c;
-            --text-color: #0b0b3b; /* Cor do texto principal (azul escuro) */
-            --light-text-color: #ffffff; /* Cor para texto em botões, etc. */
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             /* CONFIGURAÇÃO DA IMAGEM DE FUNDO */
             background-image: url('Cópia de Apresentação Tutoria 2026.jpg');
-            background-size: cover; /* Cobre todo o fundo */
-            background-position: center; /* Centraliza a imagem */
-            background-repeat: no-repeat; /* Não repete */
-            background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             
             display: flex;
             justify-content: center;
@@ -33,16 +31,14 @@
         }
 
         .container {
-            /* Fundo branco opaco para legibilidade */
-            background: var(--container-bg-color); 
-            color: var(--text-color); /* Texto escuro */
-            
-            /* Efeito de desfoque suave atrás da caixa (glassmorphism) */
+            /* Fundo escuro (roxo/azul) da identidade, com leve transparência */
+            background: rgba(11, 11, 59, 0.95); 
+            color: var(--text-color);
             backdrop-filter: blur(8px); 
             
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             max-width: 600px;
             width: 90%;
         }
@@ -56,13 +52,13 @@
         .subtitle {
             font-size: 0.9em;
             margin-bottom: 20px;
-            color: #555; /* Cinza escuro para o subtítulo */
+            color: #ccc;
         }
 
         /* ESTILOS DA BARRA DE PROGRESSO */
         .progress-container {
             width: 100%;
-            background-color: rgba(0, 0, 0, 0.1); /* Fundo mais escuro para contrastar com a caixa branca */
+            background-color: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             margin-bottom: 30px;
             height: 12px;
@@ -71,7 +67,7 @@
 
         .progress-bar {
             height: 100%;
-            background-color: var(--accent-color); /* Usando o laranja da identidade */
+            background-color: var(--accent-color);
             border-radius: 10px;
             width: 0%;
             transition: width 0.4s ease;
@@ -82,7 +78,6 @@
             font-weight: bold;
             margin-bottom: 30px;
             min-height: 80px;
-            color: var(--text-color); /* Garante que a pergunta seja escura */
         }
 
         .btn {
@@ -100,7 +95,7 @@
 
         .btn:hover {
             background-color: var(--accent-color);
-            color: white; /* Texto branco no hover */
+            color: var(--bg-color);
         }
 
         .btn:disabled {
@@ -113,184 +108,3 @@
             font-size: 1.1em;
             min-height: 100px;
             display: none;
-            padding: 15px;
-            border-radius: 8px;
-            color: var(--main-dark-color); /* Texto preto na explicação */
-        }
-
-        .next-btn {
-            /* Botão 'Próxima Pergunta' com as cores originais da Irradiation */
-            background-color: var(--main-dark-color);
-            color: var(--light-text-color);
-            border: none;
-            padding: 12px 24px;
-            margin-top: 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            display: none;
-        }
-
-        .next-btn:hover {
-            background-color: #1a1a5e; /* Variação de azul escuro para hover */
-        }
-
-        .score-board {
-            display: none;
-        }
-
-        .score-board h2 {
-            color: var(--accent-color);
-        }
-        
-        /* Ajuste do botão 'Jogar Novamente' no final */
-        .score-board .btn:hover {
-            color: white;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container" id="game-container">
-    <h1>MITO ou VERDADE?</h1>
-    <div class="subtitle">Irradiation - Consultoria em Física Médica</div>
-    
-    <div id="quiz-area">
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-
-        <div class="question-box" id="question-text">Carregando pergunta...</div>
-        
-        <button class="btn" id="btn-mito" onclick="checkAnswer('Mito')">MITO</button>
-        <button class="btn" id="btn-verdade" onclick="checkAnswer('Verdade')">VERDADE</button>
-
-        <div class="feedback" id="feedback-area"></div>
-        <button class="next-btn" id="btn-next" onclick="nextQuestion()">Próxima Pergunta</button>
-    </div>
-
-    <div class="score-board" id="score-area">
-        <h2>Fim de Jogo!</h2>
-        <p>Você acertou <span id="final-score">0</span> de <span id="total-questions">0</span> perguntas.</p>
-        <p>Proteção radiológica é coisa séria. Siga a @irradiationjr para aprender mais!</p>
-        <button class="btn" onclick="location.reload()">Jogar Novamente</button>
-    </div>
-</div>
-
-<script>
-    const questions = [
-        {
-            text: "A radiação é sempre prejudicial a saúde.",
-            answer: "Mito",
-            explanation: "Depende do tipo de radiação e dose. Em certos casos, como em exames, a dose gera benefício para o diagnóstico eficaz."
-        },
-        {
-            text: "Todas as fontes de radiação são iguais em termos de perigo.",
-            answer: "Mito",
-            explanation: "Existem radiações não ionizantes que não são prejudiciais e radiações ionizantes que podem ser, dependendo da exposição."
-        },
-        {
-            text: "A radiação é cumulativa ao longo da vida.",
-            answer: "Verdade",
-            explanation: "É cumulativa em termos de efeitos biológicos, todas as exposições que temos ao longo da vida são somáticas."
-        },
-        {
-            text: "O contador Geiger é usado para proteger contra a radiação.",
-            answer: "Mito",
-            explanation: "Ele só mede e indica a radiação no ambiente, não oferece nenhum tipo de barramento."
-        },
-        {
-            text: "Todos os dispositivos eletrônicos emitem radiação.",
-            answer: "Verdade",
-            explanation: "Podem emitir radiações eletromagnéticas não ionizantes, ou seja, que não causam mal aos seres vivos."
-        },
-        {
-            text: "EPI's podem tornar uma pessoa imune à radiação.",
-            answer: "Mito",
-            explanation: "Os EPI's (Equipamentos de Proteção Individual) somente diminuem a exposição à radiação, não tornam o indivíduo imune."
-        },
-        {
-            text: "A máquina de raios X emite radiação mesmo desligada.",
-            answer: "Mito",
-            explanation: "No momento em que é desligada, a máquina para de produzir raios X. Não há emissão no meio."
-        },
-        {
-            text: "Ao realizar um exame que utiliza raios X o paciente fica radioativo.",
-            answer: "Mito",
-            explanation: "A radiação só atravessa o paciente. Para ficar radioativo, ele precisaria ter contato (incorporação) com material radioativo."
-        }
-    ];
-
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    const questionText = document.getElementById("question-text");
-    const feedbackArea = document.getElementById("feedback-area");
-    const btnMito = document.getElementById("btn-mito");
-    const btnVerdade = document.getElementById("btn-verdade");
-    const btnNext = document.getElementById("btn-next");
-    const quizArea = document.getElementById("quiz-area");
-    const scoreArea = document.getElementById("score-area");
-    const progressBar = document.getElementById("progress-bar"); // Referência da barra
-
-    function loadQuestion() {
-        const q = questions[currentQuestionIndex];
-        questionText.innerText = q.text;
-        feedbackArea.style.display = "none";
-        btnNext.style.display = "none";
-        btnMito.disabled = false;
-        btnVerdade.disabled = false;
-
-        // ATUALIZA A BARRA DE PROGRESSO
-        const progressPercentage = (currentQuestionIndex / questions.length) * 100;
-        progressBar.style.width = progressPercentage + "%";
-    }
-
-    function checkAnswer(userChoice) {
-        const q = questions[currentQuestionIndex];
-        const isCorrect = userChoice === q.answer;
-
-        btnMito.disabled = true;
-        btnVerdade.disabled = true;
-
-        feedbackArea.style.display = "block";
-        
-        if (isCorrect) {
-            score++;
-            feedbackArea.style.backgroundColor = "rgba(46, 204, 113, 0.1)"; // Fundo verde claro para acerto
-            feedbackArea.style.border = "1px solid var(--correct-color)";
-            feedbackArea.innerHTML = `<strong>Correto! É ${q.answer}.</strong><br><br>${q.explanation}`;
-        } else {
-            feedbackArea.style.backgroundColor = "rgba(231, 76, 60, 0.1)"; // Fundo vermelho claro para erro
-            feedbackArea.style.border = "1px solid var(--wrong-color)";
-            feedbackArea.innerHTML = `<strong>Incorreto. A resposta é ${q.answer}.</strong><br><br>${q.explanation}`;
-        }
-
-        btnNext.style.display = "inline-block";
-    }
-
-    function nextQuestion() {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-            loadQuestion();
-        } else {
-            showScore();
-        }
-    }
-
-    function showScore() {
-        quizArea.style.display = "none";
-        scoreArea.style.display = "block";
-        document.getElementById("final-score").innerText = score;
-        document.getElementById("total-questions").innerText = questions.length;
-        
-        // Preenche a barra em 100% no final
-        progressBar.style.width = "100%";
-    }
-
-    // Inicializa o jogo
-    loadQuestion();
-</script>
-
-</body>
-</html>
