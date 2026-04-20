@@ -6,17 +6,24 @@
     <title>Mito ou Verdade - Proteção Radiológica</title>
     <style>
         :root {
-            --bg-color: #0b0b3b; /* Azul escuro da identidade */
-            --text-color: #ffffff;
+            --main-dark-color: #0b0b3b; /* Azul escuro da identidade */
+            --container-bg-color: rgba(255, 255, 255, 0.95); /* Fundo branco quase opaco para o texto */
             --accent-color: #f39c12; /* Laranja */
             --correct-color: #2ecc71;
             --wrong-color: #e74c3c;
+            --text-color: #0b0b3b; /* Cor do texto principal (azul escuro) */
+            --light-text-color: #ffffff; /* Cor para texto em botões, etc. */
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            /* CONFIGURAÇÃO DA IMAGEM DE FUNDO */
+            background-image: url('Cópia de Apresentação Tutoria 2026.jpg');
+            background-size: cover; /* Cobre todo o fundo */
+            background-position: center; /* Centraliza a imagem */
+            background-repeat: no-repeat; /* Não repete */
+            background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
+            
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,7 +33,13 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.1);
+            /* Fundo branco opaco para legibilidade */
+            background: var(--container-bg-color); 
+            color: var(--text-color); /* Texto escuro */
+            
+            /* Efeito de desfoque suave atrás da caixa (glassmorphism) */
+            backdrop-filter: blur(8px); 
+            
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -43,13 +56,13 @@
         .subtitle {
             font-size: 0.9em;
             margin-bottom: 20px;
-            color: #ccc;
+            color: #555; /* Cinza escuro para o subtítulo */
         }
 
         /* ESTILOS DA BARRA DE PROGRESSO */
         .progress-container {
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.1); /* Fundo mais escuro para contrastar com a caixa branca */
             border-radius: 10px;
             margin-bottom: 30px;
             height: 12px;
@@ -69,6 +82,7 @@
             font-weight: bold;
             margin-bottom: 30px;
             min-height: 80px;
+            color: var(--text-color); /* Garante que a pergunta seja escura */
         }
 
         .btn {
@@ -86,7 +100,7 @@
 
         .btn:hover {
             background-color: var(--accent-color);
-            color: var(--bg-color);
+            color: white; /* Texto branco no hover */
         }
 
         .btn:disabled {
@@ -101,18 +115,24 @@
             display: none;
             padding: 15px;
             border-radius: 8px;
+            color: var(--main-dark-color); /* Texto preto na explicação */
         }
 
         .next-btn {
-            background-color: var(--text-color);
-            color: var(--bg-color);
+            /* Botão 'Próxima Pergunta' com as cores originais da Irradiation */
+            background-color: var(--main-dark-color);
+            color: var(--light-text-color);
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             margin-top: 20px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             display: none;
+        }
+
+        .next-btn:hover {
+            background-color: #1a1a5e; /* Variação de azul escuro para hover */
         }
 
         .score-board {
@@ -121,6 +141,11 @@
 
         .score-board h2 {
             color: var(--accent-color);
+        }
+        
+        /* Ajuste do botão 'Jogar Novamente' no final */
+        .score-board .btn:hover {
+            color: white;
         }
     </style>
 </head>
@@ -232,11 +257,11 @@
         
         if (isCorrect) {
             score++;
-            feedbackArea.style.backgroundColor = "rgba(46, 204, 113, 0.2)";
+            feedbackArea.style.backgroundColor = "rgba(46, 204, 113, 0.1)"; // Fundo verde claro para acerto
             feedbackArea.style.border = "1px solid var(--correct-color)";
             feedbackArea.innerHTML = `<strong>Correto! É ${q.answer}.</strong><br><br>${q.explanation}`;
         } else {
-            feedbackArea.style.backgroundColor = "rgba(231, 76, 60, 0.2)";
+            feedbackArea.style.backgroundColor = "rgba(231, 76, 60, 0.1)"; // Fundo vermelho claro para erro
             feedbackArea.style.border = "1px solid var(--wrong-color)";
             feedbackArea.innerHTML = `<strong>Incorreto. A resposta é ${q.answer}.</strong><br><br>${q.explanation}`;
         }
